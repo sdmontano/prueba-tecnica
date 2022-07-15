@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prueba_tecnica/pages/music_page.dart';
+import 'package:prueba_tecnica/pages/post_page.dart';
 import 'package:prueba_tecnica/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,12 +13,13 @@ class _HomePageState extends State<HomePage> {
   int index = 0;
   final screens = [
     ProfilePage(),
-    MusicPage(),
+    PostPage(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.orangeAccent,
         currentIndex: index,
         onTap: (i) => setState(() {
           index = i;

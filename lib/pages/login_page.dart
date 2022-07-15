@@ -8,6 +8,10 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final inputBorder =
         OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+
+    TextEditingController _emailcontroller = new TextEditingController();
+    TextEditingController _passwordcontroller = new TextEditingController();
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 238, 232, 232),
       body: SafeArea(
@@ -19,6 +23,7 @@ class LoginPage extends StatelessWidget {
             children: [
               Flexible(child: Container(), flex: 2),
               TextField(
+                controller: _emailcontroller,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                     hintText: 'Enter your email',
@@ -30,6 +35,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
+                controller: _passwordcontroller,
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 decoration: InputDecoration(
