@@ -3,6 +3,7 @@ import 'package:prueba_tecnica/data/models/post_model.dart';
 import 'package:prueba_tecnica/data/repository/post_repository.dart';
 import 'package:prueba_tecnica/widgets/appbar.dart';
 import 'package:prueba_tecnica/widgets/card.dart';
+import 'package:prueba_tecnica/widgets/texfield_input.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -12,30 +13,52 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  TextEditingController titlecontroller = new TextEditingController();
+  TextEditingController bodycontroller = new TextEditingController();
+
+  late Future<List<PostModel>> posts;
+  late PostRepository service;
+  late Future<PostModel> post;
+
+  @override
+  void initState() {
+    super.initState();
+    service = PostRepository();
+    posts = service.getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    titlecontroller.dispose();
+    bodycontroller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController titlecontroller = new TextEditingController();
-    TextEditingController bodycontroller = new TextEditingController();
-    PostRepository service = PostRepository();
-    Future<List<PostModel>> post = service.getData();
-
     return Scaffold(
-      endDrawer: Drawer(
-        child: ListTile(title: Text('Close Session')),
-      ),
       appBar: NewAppBar(titl: 'Post'),
       body: FutureBuilder(
-        future: post,
+        future: posts,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             final items = snapshot.data;
             List<PostModel> temp = items;
-
+// Create a ListView
             return ListView.builder(
               itemCount: temp.length,
               itemBuilder: (context, index) {
-                PostModel posts = temp[index];
-                return Cards(title: posts.title, body: posts.body);
+                PostModel pos = temp[index];
+                return Cards(
+                  title: pos.title,
+                  body: pos.description,
+                  ontap: () {
+                    post = service.deleteData(pos.id);
+                    setState(() {
+                      posts = service.getData();
+                    });
+                  },
+                );
               },
             );
           } else if (snapshot.hasError) {
@@ -47,6 +70,7 @@ class _PostPageState extends State<PostPage> {
           );
         },
       ),
+//Button to add new post
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orangeAccent,
         onPressed: () {
@@ -57,17 +81,35 @@ class _PostPageState extends State<PostPage> {
                   title: Text('New Post:'),
                   content: Container(
                       child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextField(controller: titlecontroller),
+                      TextFieldInput(
+                        textEditingController: titlecontroller,
+                        textInputType: TextInputType.text,
+                        hintText: 'Enter the title',
+                      ),
                       SizedBox(height: 20),
-                      TextField(controller: bodycontroller),
+                      TextFieldInput(
+                        textEditingController: bodycontroller,
+                        textInputType: TextInputType.text,
+                        hintText: 'Enter the description',
+                      ),
                     ],
                   )),
                   actions: [
                     MaterialButton(
                       child: Text('Add'),
                       textColor: Colors.orangeAccent,
-                      onPressed: () {},
+                      onPressed: () {
+                        post = service.postData(
+                            titlecontroller.text, bodycontroller.text);
+                        titlecontroller.clear;
+                        bodycontroller.clear;
+                        setState(() {
+                          posts = service.getData();
+                        });
+                        Navigator.of(context).pop();
+                      },
                     )
                   ],
                 );

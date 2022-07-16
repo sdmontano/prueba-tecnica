@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:prueba_tecnica/data/services/user_preference.dart';
+import 'package:prueba_tecnica/pages/login_page.dart';
 
 class NewAppBar extends StatelessWidget implements PreferredSizeWidget {
   String titl;
   NewAppBar({required this.titl});
+
+  final PrefService _prefService = PrefService();
+
   @override
   Size get preferredSize => Size.fromHeight(60);
 
@@ -20,6 +25,12 @@ class NewAppBar extends StatelessWidget implements PreferredSizeWidget {
             itemBuilder: (context) => [
                   // popupmenu item 1
                   PopupMenuItem(
+                    onTap: () async {
+                      await _prefService.removeCache('email').whenComplete(() =>
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage())));
+                    },
                     value: 1,
                     // row has two child icon and text.
                     child: Row(

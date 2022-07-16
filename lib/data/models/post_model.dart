@@ -1,25 +1,28 @@
 import 'dart:convert';
 
+// Model for Posts
 class PostModel {
+  int id;
   String title;
-  String body;
-  int? id;
-  int? userId;
+  String description;
 
-  PostModel({required this.title, required this.body, this.id, this.userId
+  PostModel({required this.title, required this.description, required this.id
       //required this.artist,
       });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
-        title: json['title'],
-        body: json['body'],
-        id: json['id'],
-        userId: json['userId']);
+      title: json['title'],
+      description: json['description'],
+      id: json['id'],
+    );
   }
 
-  Map<String, dynamic> toJson() =>
-      {'title': title, 'body': body, 'id': id, 'userId': userId};
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'description': description,
+        'id': id,
+      };
 }
 
 List<PostModel> postModelFromJson(String str) =>
